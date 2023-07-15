@@ -24,7 +24,7 @@ export const MessageViewer: React.FC<MessageViewerProps> = ({
 
   return (
     <div className="overflow-auto flex-1">
-      <div className="flex flex-col gap-2 p-2 min-h-min max-h-100">
+      <div className="flex flex-col gap-2 p-2 min-h-min">
         {selectedUser &&
           messages &&
           messages.map((message) => (
