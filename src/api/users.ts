@@ -1,9 +1,10 @@
 import { channel } from "../broadcast";
+import { config } from "../config";
 import { MessageType, USERS_STORE_NAME } from "../types/channel";
 import { User, UserMap } from "../types/user";
 
 export const getUser = async (): Promise<User> => {
-  const response = await fetch("https://randomuser.me/api/");
+  const response = await fetch(config.usersApiUrl);
   const data = await response.json();
   const user: User = {
     id: data.results[0].login.uuid,

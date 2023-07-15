@@ -1,13 +1,12 @@
 import classnames from "classnames";
 import React, { useEffect, useMemo, useState } from "react";
 import urlMetadata from "url-metadata";
+import { config } from "../../config";
 
 type LinkPreviewProps = {
   url: string;
   className?: string;
 };
-
-const CORS_PROXY = "https://corsproxy.io/?";
 
 type MetaData = {
   title: string;
@@ -24,7 +23,7 @@ export const LinkPreview: React.FC<
 
   useEffect(() => {
     setLoading(true);
-    urlMetadata(CORS_PROXY + encodeURIComponent(url))
+    urlMetadata(config.corsProxyUr + encodeURIComponent(url))
       .then((metadata) => {
         setUrlMeta(metadata);
         setLoading(false);
