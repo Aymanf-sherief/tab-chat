@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { MessageBox } from "../../components/MessageBox";
 import { MessageViewer } from "../../components/MessageViewer";
 import { UserList } from "../../components/UserList";
@@ -19,7 +19,7 @@ type ChatPageProps = {
 const ChatPage: React.FC<ChatPageProps> = ({ addMessage }) => {
   const [selectedUser, setSelectedUser] = useState<User | undefined>();
 
-  const { currentUser, messages } = React.useContext(ChatContext);
+  const { currentUser, messages } = useContext(ChatContext);
 
   const showMessageNotification = useCallback((message: ChannelMessage) => {
     toast(() => (
@@ -58,15 +58,8 @@ const ChatPage: React.FC<ChatPageProps> = ({ addMessage }) => {
       {currentUser && selectedUser ? (
         <div className="w-screen h-3/4 lg:w-3/4 lg:h-screen flex flex-col bg-gray-800">
           <UserCard user={selectedUser} className="w-full bg-white" />
-          <MessageViewer
-            messages={messages?.[currentUser?.id]?.[selectedUser.id] ?? []}
-            selectedUser={selectedUser}
-          />
-          <MessageBox
-            currentUser={currentUser}
-            selectedUser={selectedUser}
-            addMessage={addMessage}
-          />
+          <MessageViewer selectedUser={selectedUser} />
+          <MessageBox selectedUser={selectedUser} addMessage={addMessage} />
         </div>
       ) : (
         <div className="flex justify-center items-center w-screen h-3/4 lg:w-3/4 lg:h-screen">

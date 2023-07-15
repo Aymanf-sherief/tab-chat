@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useCallback, useState } from "react";
+import React, { ChangeEvent, useCallback, useContext, useState } from "react";
 import { User } from "../../types/user";
 import { ChannelMessage } from "../../types/message";
 import { channel } from "../../broadcast";
@@ -6,18 +6,19 @@ import { v4 as uuidv4 } from "uuid";
 import { MessageType } from "../../types/channel";
 import { Button } from "../shared/Button";
 import { Input } from "../shared/Input";
+import { ChatContext } from "../../App";
 
 export interface MessageBoxProps {
-  currentUser: User;
   selectedUser: User;
   addMessage: (message: ChannelMessage) => void;
 }
 
 export const MessageBox: React.FC<MessageBoxProps> = ({
-  currentUser,
   selectedUser,
   addMessage,
 }) => {
+  const { currentUser } = useContext(ChatContext);
+
   const [sentMessage, setSentMessage] = useState("");
 
   const handleMessageChange = useCallback(
@@ -27,7 +28,7 @@ export const MessageBox: React.FC<MessageBoxProps> = ({
   );
 
   const handleSendMessage = useCallback(() => {
-    if (!sentMessage) {
+    if (!sentMessage || !currentUser) {
       return;
     }
     const newMessage: ChannelMessage = {

@@ -25,7 +25,9 @@ export const MessageCard: React.FC<
       )}
       {...rest}
     >
-      {message.body}
+      <p className={classnames(message.type === "SENT" ? "ml-20" : "mr-20")}>
+        {message.body}
+      </p>
       {link && (
         <LinkPreview
           url={link}

@@ -1,6 +1,5 @@
 import classnames from "classnames";
-import React, { useEffect, useMemo, useState } from "react";
-import urlMetadata from "url-metadata";
+import React, { useCallback, useEffect, useState } from "react";
 import { config } from "../../config";
 
 type LinkPreviewProps = {
@@ -9,8 +8,8 @@ type LinkPreviewProps = {
 };
 
 type MetaData = {
-  title: string;
   description: string;
+  title: string;
   image: string;
   url: string;
 };
@@ -19,45 +18,43 @@ export const LinkPreview: React.FC<
   React.HtmlHTMLAttributes<HTMLDivElement> & LinkPreviewProps
 > = ({ url, className, ...rest }) => {
   const [loading, setLoading] = useState(false);
-  const [urlMeta, setUrlMeta] = useState<urlMetadata.Result>();
+  const [urlMeta, setUrlMeta] = useState<MetaData>();
+
+  const getMetaTagContent = useCallback(
+    (dom: Document, metaTagSelector: string) =>
+      dom.querySelector(`meta[${metaTagSelector}]`)?.getAttribute("content") ??
+      "",
+    []
+  );
 
   useEffect(() => {
     setLoading(true);
-    urlMetadata(config.corsProxyUr + encodeURIComponent(url))
-      .then((metadata) => {
-        setUrlMeta(metadata);
+    fetch(config.corsProxyUr + encodeURIComponent(url))
+      .then((res) => res.text())
+      .then((html) => {
+        const linkDom = new DOMParser().parseFromString(html, "text/html");
+        const description =
+          getMetaTagContent(linkDom, "name=description") ||
+          getMetaTagContent(linkDom, "property='og:description'");
+        const image = getMetaTagContent(linkDom, "property='og:image'");
+        const url = getMetaTagContent(linkDom, "property='og:url'");
+        const title =
+          getMetaTagContent(linkDom, "property='og:site_name'") ||
+          getMetaTagContent(linkDom, "property='og:title'");
+        setUrlMeta({ description, image, url, title });
         setLoading(false);
       })
       .catch((err) => {
         console.error(err);
         setLoading(false);
       });
-  }, [url]);
-
-  const metaData: MetaData = useMemo(() => {
-    return {
-      title: (urlMeta?.title ||
-        urlMeta?.["og:title"] ||
-        urlMeta?.["twitter:title"] ||
-        urlMeta?.["og:site_name"] ||
-        "") as string,
-      description: (urlMeta?.description ||
-        urlMeta?.["og:description"] ||
-        urlMeta?.["twitter:description"] ||
-        "") as string,
-      image: (urlMeta?.image ||
-        urlMeta?.["og:image"] ||
-        urlMeta?.["twitter:image"] ||
-        "") as string,
-      url,
-    };
-  }, [urlMeta, url]);
+  }, [url, getMetaTagContent]);
 
   return (
     <div
       className={classnames(
         className,
-        "border border-gray-200 shadow m-10 p-2 w-full"
+        "border rounded-full border-gray-200 shadow m-10 p-2 w-full"
       )}
       {...rest}
     >
@@ -65,21 +62,22 @@ export const LinkPreview: React.FC<
         <div className="text-center">loading...</div>
       ) : (
         <a
-          className="flex flex-col gap-2 justify-center items-center text-sm w-full"
+          className="flex flex-col gap-2 justify-center items-center text-sm w-full break-words px-10"
           href={url}
           target="_blank"
           rel="noopener noreferrer"
         >
-          {!metaData?.title && !metaData?.description && !metaData?.image && (
+          {!urlMeta?.description && !urlMeta?.image && (
             <p className="text-red-500">no preview available!</p>
           )}
-          {metaData?.title && <div>{metaData.title}</div>}
-          {metaData?.description && <div>{metaData.description}</div>}
-          {metaData?.image && (
+          {urlMeta?.url && <div>{urlMeta.url}</div>}
+          {urlMeta?.title && <div>{urlMeta.title}</div>}
+          {urlMeta?.description && <div>{urlMeta.description}</div>}
+          {urlMeta?.image && (
             <img
               className="self-center w-20 h-20"
-              src={metaData.image}
-              alt={metaData.title}
+              src={urlMeta.image}
+              alt={urlMeta.description}
             />
           )}
         </a>
