@@ -1,19 +1,22 @@
 import React, { ChangeEvent, useCallback, useState } from "react";
 import { User } from "../../types/user";
-import { Message } from "../../types/message";
+import { ChannelMessage } from "../../types/message";
 import { channel } from "../../broadcast";
 import { v4 as uuidv4 } from "uuid";
+import { MessageType } from "../../types/channel";
+import { Button } from "../shared/Button";
+import { Input } from "../shared/Input";
 
 export interface MessageBoxProps {
   currentUser: User;
   selectedUser: User;
-  setReceivedMessages: React.Dispatch<React.SetStateAction<Message[]>>;
+  addMessage: (message: ChannelMessage) => void;
 }
 
 export const MessageBox: React.FC<MessageBoxProps> = ({
   currentUser,
   selectedUser,
-  setReceivedMessages,
+  addMessage,
 }) => {
   const [sentMessage, setSentMessage] = useState("");
 
@@ -24,39 +27,43 @@ export const MessageBox: React.FC<MessageBoxProps> = ({
   );
 
   const handleSendMessage = useCallback(() => {
-    if (
-      !currentUser ||
-      !selectedUser ||
-      !sentMessage ||
-      !channel ||
-      !channel.postMessage
-    ) {
+    if (!sentMessage) {
       return;
     }
-    const newMessage: Message = {
+    const newMessage: ChannelMessage = {
       id: uuidv4(),
       body: sentMessage,
       from: currentUser,
       to: selectedUser,
     };
-    console.log("sending");
     channel.postMessage({
-      type: "tabchatMessage",
+      type: MessageType.message,
       message: newMessage,
     });
-    setReceivedMessages((prev) => [...prev, newMessage]);
-  }, [sentMessage, currentUser, selectedUser, setReceivedMessages]);
+    addMessage(newMessage);
+    setSentMessage("");
+  }, [sentMessage, currentUser, selectedUser, addMessage, setSentMessage]);
+
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === "Enter") {
+        handleSendMessage();
+      }
+    },
+    [handleSendMessage]
+  );
 
   return (
-    <div className="flex flex-row justify-center align-middle bg-white border-2">
-      <input
-        className="rounded-full p-4 my-4 h-12 w-full mx-4"
+    <div className="flex flex-row justify-center align-middle bg-white p-4 shadow">
+      <Input
         placeholder="write your message here ..."
         onChange={handleMessageChange}
+        onKeyDown={handleKeyDown}
+        value={sentMessage}
       />
-      <button className="text-sm p-2 m-2 px-8" onClick={handleSendMessage}>
+      <Button onClick={handleSendMessage} className="m-2">
         send
-      </button>
+      </Button>
     </div>
   );
 };

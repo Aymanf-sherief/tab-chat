@@ -4,3 +4,5 @@ export type User = {
   lastName: string;
   profilePicture: string;
 };
+
+export type UserMap = { [id: string]: User };
