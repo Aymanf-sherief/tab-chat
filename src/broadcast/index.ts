@@ -21,7 +21,7 @@ export const handleChatMessage = (
     if (
       messages &&
       incomingMessage.to.id === currentUser.id &&
-      !messages[currentUser.id]?.[incomingMessage.from.id].find(
+      !messages[currentUser.id]?.[incomingMessage.from.id]?.find(
         (msg) => msg.id === incomingMessage.id
       )
     ) {
