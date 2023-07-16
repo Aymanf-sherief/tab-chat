@@ -16,6 +16,12 @@ type ChatPageProps = {
   addMessage: (message: ChannelMessage) => void;
 };
 
+/**
+ * ChatPage component, shows the chat page after a login
+ * @param {Function} addMessage - function to add a message to the chat
+ * @returns {React.FC} - React component
+ */
+
 const ChatPage: React.FC<ChatPageProps> = ({ addMessage }) => {
   const [selectedUser, setSelectedUser] = useState<User | undefined>();
 
@@ -32,6 +38,7 @@ const ChatPage: React.FC<ChatPageProps> = ({ addMessage }) => {
   }, []);
 
   useEffect(() => {
+    // add a listener for chat messages on the broadcast channel
     const chatMessageEventListener = (event: MessageEvent) => {
       if (
         event.data.type === MessageType.message &&

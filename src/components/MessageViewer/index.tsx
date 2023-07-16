@@ -7,6 +7,11 @@ export interface MessageViewerProps {
   selectedUser: User;
 }
 
+/**
+ * MessageViewer component, shows the messages in the chat window
+ * @param {User} selectedUser - selected user
+ * @returns {React.FC} - React component
+ */
 export const MessageViewer: React.FC<MessageViewerProps> = ({
   selectedUser,
 }) => {
@@ -24,6 +29,8 @@ export const MessageViewer: React.FC<MessageViewerProps> = ({
 
   const currentMessages = useMemo(
     () =>
+      // get only messages between the current and selected user
+      // refer to the MessageMap type in src/types/message.ts
       currentUser ? messages?.[currentUser?.id]?.[selectedUser.id] ?? [] : [],
     [messages, currentUser, selectedUser]
   );

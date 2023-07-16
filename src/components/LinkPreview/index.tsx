@@ -14,12 +14,19 @@ type MetaData = {
   url: string;
 };
 
+/**
+ * LinkPreview component, show the preview of a link in a chat message
+ * @param {string} url - url to preview
+ * @param {string} className - className for styling
+ * @returns {React.FC} - React component
+ */
 export const LinkPreview: React.FC<
   React.HtmlHTMLAttributes<HTMLDivElement> & LinkPreviewProps
 > = ({ url, className, ...rest }) => {
   const [loading, setLoading] = useState(false);
   const [urlMeta, setUrlMeta] = useState<MetaData>();
 
+  // utility for getting meta tags from fetched html
   const getMetaTagContent = useCallback(
     (dom: Document, metaTagSelector: string) =>
       dom.querySelector(`meta[${metaTagSelector}]`)?.getAttribute("content") ??
@@ -33,6 +40,7 @@ export const LinkPreview: React.FC<
       .then((res) => res.text())
       .then((html) => {
         const linkDom = new DOMParser().parseFromString(html, "text/html");
+        // sometimes some of the meta tags may be missing, so we need to fallback to open graph tags
         const description =
           getMetaTagContent(linkDom, "name=description") ||
           getMetaTagContent(linkDom, "property='og:description'");

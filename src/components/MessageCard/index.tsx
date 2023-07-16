@@ -8,6 +8,12 @@ type MessageCardProps = {
   className?: string;
 };
 
+/**
+ * MessageCard component, shows a single message in the chat window
+ * @param {ChatMessage} message - message to display
+ * @param {string} className - className for styling
+ * @returns {React.FC} - React component
+ */
 export const MessageCard: React.FC<
   React.HtmlHTMLAttributes<HTMLDivElement> & MessageCardProps
 > = ({ message, className, ...rest }) => {

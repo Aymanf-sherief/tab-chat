@@ -10,6 +10,12 @@ export interface UserListProps {
   setSelectedUser: React.Dispatch<React.SetStateAction<User | undefined>>;
 }
 
+/**
+ * UserList component, shows the list of users on the left/top of the chat window
+ * @param {User} selectedUser - selected user
+ * @param {Function} setSelectedUser - function to set the selected user
+ * @returns {React.FC} - React component
+ */
 export const UserList: React.FC<UserListProps> = ({
   selectedUser,
   setSelectedUser,

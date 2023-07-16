@@ -6,6 +6,11 @@ import { usersApi } from "../../api";
 import { channel } from "../../broadcast";
 import { MessageType } from "../../types/channel";
 
+/**
+ * LoginPage component, shows the login page
+ * @param {Function} setSelectedUser - function to set the selected user, in case logged in as previous user
+ * @returns {React.FC} - React component
+ */
 export const LoginPage: React.FC<UserListProps> = ({ setSelectedUser }) => {
   const handleNewUserClick = useCallback(async () => {
     const newUser = await usersApi.getUser();

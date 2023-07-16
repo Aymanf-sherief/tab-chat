@@ -6,6 +6,14 @@ export const channel = new window.BroadcastChannel("tabchat");
 
 type ChannelData<T> = { type: MessageType; message: T };
 
+/**
+ * @param {MessageEvent<ChannelData<ChannelMessage>>} event - The message event
+ * @param {User} currentUser - The current user
+ * @param {MessageMap} messages - The messages map
+ * @param {(message: ChannelMessage) => void} addMessage - The addMessage function
+ * @description - Handles a chat message
+ * @returns {boolean} - Whether the message was handled
+ */
 export const handleChatMessage = (
   event: MessageEvent<ChannelData<ChannelMessage>>,
   currentUser: User,
@@ -32,11 +40,18 @@ export const handleChatMessage = (
   return false;
 };
 
+/**
+ * @param {MessageEvent<ChannelData<User>>} event - The message event
+ * @param {UserMap} users - The users map
+ * @param {(user: User) => void} addUser - The addUser function
+ * @description - Handles a new user login message
+ * @returns {void}
+ */
 export const handleUserMessage = (
   event: MessageEvent<ChannelData<User>>,
   users: UserMap,
   addUser: (user: User) => void
-) => {
+): void => {
   if (event.origin === origin && event.data.type === MessageType.user) {
     const newUser = event.data.message;
 

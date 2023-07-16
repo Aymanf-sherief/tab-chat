@@ -20,6 +20,7 @@ function App() {
   const [currentUser, setCurrentUser] = useState<User | undefined>();
   const [messages, setMessages] = useState<MessageMap>({});
 
+  // load initial data from local storage
   useEffect(() => {
     const storedUsers = usersApi.getUsersMap();
     setUsers(storedUsers);
@@ -41,11 +42,14 @@ function App() {
   }, []);
 
   useEffect(() => {
+    // add a listener for new user login messages on the broadcast channel
+    // this allows us to automatically update the user list when a new user logs in
     const userMessageEventListener = (event: MessageEvent) => {
       if (event.data.type === MessageType.user) {
         handleUserMessage(event, users, addUser);
       }
     };
+
     channel.addEventListener("message", userMessageEventListener);
     return () =>
       channel.removeEventListener("message", userMessageEventListener);

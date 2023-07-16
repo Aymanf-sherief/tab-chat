@@ -13,6 +13,13 @@ export interface MessageBoxProps {
   addMessage: (message: ChannelMessage) => void;
 }
 
+/**
+ * MessageBox component, shows the message input box and send button
+ * @param {User} selectedUser - selected user
+ * @param {Function} addMessage - function to add message to the channel
+ * @returns {React.FC} - React component
+ */
+
 export const MessageBox: React.FC<MessageBoxProps> = ({
   selectedUser,
   addMessage,

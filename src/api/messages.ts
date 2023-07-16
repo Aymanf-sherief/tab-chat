@@ -2,10 +2,21 @@ import { channel } from "../broadcast";
 import { MESSAGES_STORE_NAME, MessageType } from "../types/channel";
 import { ChannelMessage, ChatMessage, MessageMap } from "../types/message";
 
+// Mock messages api using localstorage as a BAAS
+
+/**
+ * @returns {MessageMap} - A map of messages
+ * @description - Returns a map of messages from localstorage
+ */
 export const getMessagesMap = (): MessageMap => {
   return JSON.parse(localStorage.getItem(MESSAGES_STORE_NAME) ?? "{}");
 };
 
+/**
+ * @param {ChannelMessage} message - The message to save
+ * @returns {MessageMap} - A map of messages
+ * @description - Saves a message to localstorage
+ */
 export const saveMessage = (message: ChannelMessage): MessageMap => {
   const messages = getMessagesMap();
   if (!messages[message.from.id]) {
@@ -52,6 +63,11 @@ export const saveMessage = (message: ChannelMessage): MessageMap => {
   return messages;
 };
 
+/**
+ * @param {ChannelMessage} message - The message to broadcast
+ * @description - Broadcasts a message to all clients
+ * @returns {void}
+ */
 export const broadcastMessage = (message: ChannelMessage): void => {
   channel.postMessage({ type: MessageType.message, message });
 };
