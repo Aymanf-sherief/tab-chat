@@ -286,4 +286,4 @@ IndexedDB is a better alternative to LocalStorage since it's more performant and
 
 ## Conclusion
 
-For any further questions, check the [feature demo loom video](https://www.loom.com/share/5e4c18dacc544b5ba1b059d3effa6ba2?sid=114c0015-c088-4865-914c-7bbbcf6582a7) or contact me at [aymanf.sherief@gmail.com](mailto:aymanf.sherief@gmail.com)
+For any further questions, check the [feature demo loom video](https://www.loom.com/share/2be49476b6704deea26e0bcdcd4d6308?sid=90ac3883-6aeb-4d2f-a442-711f48c2dde5) or contact me at [aymanf.sherief@gmail.com](mailto:aymanf.sherief@gmail.com)
